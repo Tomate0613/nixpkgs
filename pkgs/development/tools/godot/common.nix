@@ -662,6 +662,7 @@ let
             pname = finalAttrs.unwrapped.pname + "-wrapper";
             inherit (finalAttrs.unwrapped) version outputs meta;
             inherit unwrapped dotnet-sdk;
+            inherit dotnet-sdk_alt;
 
             dontUnpack = true;
             dontConfigure = true;
@@ -686,10 +687,10 @@ let
               ln -s "$unwrapped"/share/icons $out/share/
 
               # ensure dotnet hooks get run
-              echo "${finalAttrs.dotnet-sdk}" >> "$out"/nix-support/propagated-build-inputs
+              echo "${finalAttrs.dotnet-sdk_alt}" >> "$out"/nix-support/propagated-build-inputs
 
               wrapProgram "$out"/libexec/${binary} \
-                --prefix PATH : "${lib.makeBinPath [ finalAttrs.dotnet-sdk ]}"
+                --prefix PATH : "${lib.makeBinPath [ finalAttrs.dotnet-sdk_alt ]}"
 
               runHook postInstall
             '';
