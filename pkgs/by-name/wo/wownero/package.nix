@@ -37,7 +37,7 @@ let
     hash = "sha256-imiXr4irXeKiQ6VMd6f3MJ46zvdvymnRdHGgnEvkT+o=";
   };
 in
-stdenv.mkDerivation rec {
+stdenv.mkDerivation (finalAttrs: {
   pname = "wownero";
   version = "0.11.3.0";
 
@@ -45,7 +45,7 @@ stdenv.mkDerivation rec {
     domain = "codeberg.org";
     owner = "wownero";
     repo = "wownero";
-    tag = "v${version}";
+    tag = "v${finalAttrs.version}";
     hash = "sha256-EioXFfUQ+CV6+Ipef1wbmc+taKI98I420J7eqzz15Ss=";
   };
 
@@ -94,7 +94,7 @@ stdenv.mkDerivation rec {
     "-DMANUAL_SUBMODULES=ON"
   ];
 
-  meta = with lib; {
+  meta = {
     description = ''
       A privacy-centric memecoin that was fairly launched on April 1, 2018 with
       no pre-mine, stealth-mine or ICO
@@ -107,8 +107,8 @@ stdenv.mkDerivation rec {
       opposing forks.
     '';
     homepage = "https://wownero.org/";
-    license = licenses.bsd3;
+    license = lib.licenses.bsd3;
     maintainers = [ ];
-    platforms = platforms.unix;
+    platforms = lib.platforms.unix;
   };
-}
+})

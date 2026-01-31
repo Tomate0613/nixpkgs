@@ -7,19 +7,19 @@
 }:
 buildGoModule rec {
   pname = "regolith";
-  version = "1.6.1";
+  version = "1.7.0";
 
   src = fetchFromGitHub {
     owner = "Bedrock-OSS";
     repo = "regolith";
     tag = version;
-    hash = "sha256-4STEivb2nlIYE6X0vnO8L4UtFrtmaNS+rxtuE0SwKmA=";
+    hash = "sha256-9mRfK93eHuCA19RSdLKhlhbnQ0UTmBS46Gp1cXstTIk=";
   };
 
   # Requires network access.
   doCheck = false;
 
-  vendorHash = "sha256-EWfc4VzVrg1D012dsPqdXoiGpBjpQRYiWNd0wrWlw34=";
+  vendorHash = "sha256-jQeIPJJyANS+U9NrjLSnXHAecCK4rHPZrP5JFsMwcm8=";
 
   ldflags = [
     "-X main.buildSource=nix"
@@ -27,7 +27,6 @@ buildGoModule rec {
   ];
 
   nativeInstallCheckInputs = [ versionCheckHook ];
-  versionCheckProgramArg = "--version";
   doInstallCheck = true;
 
   passthru.updateScript = nix-update-script { };

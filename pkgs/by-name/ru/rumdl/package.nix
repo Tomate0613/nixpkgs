@@ -2,46 +2,43 @@
   lib,
   fetchFromGitHub,
   rustPlatform,
+  gitMinimal,
   versionCheckHook,
   nix-update-script,
 }:
 
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "rumdl";
-  version = "0.0.169";
+  version = "0.1.2";
 
   src = fetchFromGitHub {
     owner = "rvben";
     repo = "rumdl";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-1ly0bAA8NGGqdF6U/BYGvr+aR6OU0ArbK7A0vAMdtlQ=";
+    hash = "sha256-8K+jZL/yo7ur5WD+5+L+ZHhFkhYo83brgD6Gg1Xo6js=";
   };
 
-  cargoHash = "sha256-qnNm69SM3pt0LAIOvu0xhnTFft+SCD2LmY3hNoturmo=";
+  cargoHash = "sha256-dpHV5+DJLsjwvLkxtXOS7CYUNKXW57o0O541pO8vN5U=";
 
   cargoBuildFlags = [
     "--bin=rumdl"
   ];
 
-  __darwinAllowLocalNetworking = true; # required for LSP tests
+  nativeCheckInputs = [
+    gitMinimal
+  ];
 
   useNextest = true;
 
   cargoTestFlags = [
-    "--profile ci"
-  ];
-
-  checkFlags = [
-    # Skip Windows tests
-    "--skip comprehensive_windows_tests"
-    "--skip windows_vscode_tests"
+    # Prefer the "smoke" profile over "ci" to exclude flaky tests: https://github.com/rvben/rumdl/pull/341
+    "--profile smoke"
   ];
 
   doInstallCheck = true;
   nativeInstallCheckInputs = [
     versionCheckHook
   ];
-  versionCheckProgramArg = "--version";
 
   passthru = {
     updateScript = nix-update-script { };

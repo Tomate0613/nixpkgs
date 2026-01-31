@@ -2,6 +2,7 @@
   stdenv,
   lib,
   fetchFromGitHub,
+  installShellFiles,
   rustPlatform,
   pkg-config,
   openssl,
@@ -26,16 +27,16 @@
 
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "vector";
-  version = "0.51.1";
+  version = "0.53.0";
 
   src = fetchFromGitHub {
     owner = "vectordotdev";
     repo = "vector";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-EjG8FFz4PDAgCPTkHAxJieW+t6RAPx3MTSku8QGXjYg=";
+    hash = "sha256-OFybPI2oppntYBEklJtdEhImZc/m4oaSSWylr2hHUjA=";
   };
 
-  cargoHash = "sha256-17hmdom7ZZQQ4vYte3IKZnqlLEv7D7LY6tyWqdeuUHk=";
+  cargoHash = "sha256-Xuff8ZanFCtvitNYnOwCyd0UYjrhrP8UglJqbpScGVM=";
 
   nativeBuildInputs = [
     pkg-config
@@ -43,6 +44,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
     perl
     git
     rustPlatform.bindgenHook
+    installShellFiles
   ]
   # Provides the mig command used by the build scripts
   ++ lib.optional stdenv.hostPlatform.isDarwin darwin.bootstrap_cmds;
@@ -60,6 +62,10 @@ rustPlatform.buildRustPackage (finalAttrs: {
     coreutils
     zlib
   ];
+
+  # Fix build with gcc 15
+  # https://github.com/vectordotdev/vector/issues/22888
+  env.NIX_CFLAGS_COMPILE = "-std=gnu17";
 
   # Without this, we get SIGSEGV failure
   RUST_MIN_STACK = 33554432;
@@ -112,10 +118,15 @@ rustPlatform.buildRustPackage (finalAttrs: {
       --replace-fail "#[tokio::test]" ""
   '';
 
+  postInstall = lib.optionalString (stdenv.buildPlatform.canExecute stdenv.hostPlatform) ''
+    for shell in bash fish zsh; do
+      installShellCompletion --cmd vector --$shell <($out/bin/vector completion $shell)
+    done
+  '';
+
   nativeInstallCheckInputs = [
     versionCheckHook
   ];
-  versionCheckProgramArg = "--version";
   doInstallCheck = true;
 
   passthru = {
@@ -125,16 +136,17 @@ rustPlatform.buildRustPackage (finalAttrs: {
     updateScript = nix-update-script { };
   };
 
-  meta = with lib; {
+  meta = {
     description = "High-performance observability data pipeline";
     homepage = "https://github.com/vectordotdev/vector";
     changelog = "https://github.com/vectordotdev/vector/releases/tag/v${finalAttrs.version}";
-    license = licenses.mpl20;
-    maintainers = with maintainers; [
+    license = lib.licenses.mpl20;
+    maintainers = with lib.maintainers; [
+      adamcstephens
       thoughtpolice
       happysalada
     ];
-    platforms = with platforms; all;
+    platforms = with lib.platforms; all;
     mainProgram = "vector";
   };
 })

@@ -3,27 +3,27 @@
   stdenvNoCC,
   bun,
   fetchFromGitHub,
-  fzf,
   makeBinaryWrapper,
   models-dev,
   nix-update-script,
   ripgrep,
-  testers,
+  sysctl,
+  installShellFiles,
+  versionCheckHook,
   writableTmpDirAsHomeHook,
 }:
-
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "opencode";
-  version = "1.0.78";
+  version = "1.1.41";
   src = fetchFromGitHub {
-    owner = "sst";
+    owner = "anomalyco";
     repo = "opencode";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-o+rNkij9niggHkA+TtexTbrXLK0I9Ol1Cp9NC/wEuAk=";
+    hash = "sha256-p4mZRJ+BQs790hjCOJ9iXzg3JoCa4lqOdCqDRkoEfWw=";
   };
 
   node_modules = stdenvNoCC.mkDerivation {
-    pname = "opencode-node_modules";
+    pname = "${finalAttrs.pname}-node_modules";
     inherit (finalAttrs) version src;
 
     impureEnvVars = lib.fetchers.proxyImpureEnvVars ++ [
@@ -41,17 +41,17 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     buildPhase = ''
       runHook preBuild
 
-      export BUN_INSTALL_CACHE_DIR=$(mktemp -d)
-
-      # NOTE: Without `--linker=hoisted` the necessary platform specific packages are not created, i.e. `@parcel/watcher-<os>-<arch>` and `@opentui/core-<os>-<arch>`
       bun install \
-        --filter=./packages/opencode \
-        --force \
+        --cpu="*" \
         --frozen-lockfile \
+        --filter ./packages/opencode \
+        --filter ./packages/desktop \
         --ignore-scripts \
-        --linker=hoisted \
         --no-progress \
-        --production
+        --os="*"
+
+      bun --bun ./nix/scripts/canonicalize-node-modules.ts
+      bun --bun ./nix/scripts/normalize-bun-binaries.ts
 
       runHook postBuild
     '';
@@ -59,8 +59,8 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     installPhase = ''
       runHook preInstall
 
-      mkdir -p $out/node_modules
-      cp -R ./node_modules $out
+      mkdir -p $out
+      find . -type d -name node_modules -exec cp -R --parents {} $out \;
 
       runHook postInstall
     '';
@@ -68,42 +68,30 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     # NOTE: Required else we get errors that our fixed-output derivation references store paths
     dontFixup = true;
 
-    outputHash = (lib.importJSON ./hashes.json).node_modules.${stdenvNoCC.hostPlatform.system};
+    outputHash = "sha256-bjSPHxPTyzhMOztd7HjUl/lvMZYVk944xPj8ADDn5Y4=";
     outputHashAlgo = "sha256";
     outputHashMode = "recursive";
   };
 
   nativeBuildInputs = [
     bun
+    installShellFiles
     makeBinaryWrapper
     models-dev
-  ];
-
-  patches = [
-    # NOTE: Skip npm pack commands in build.ts since packages are already in node_modules
-    ./skip-npm-pack.patch
+    writableTmpDirAsHomeHook
   ];
 
   postPatch = ''
-    # don't require a specifc bun version
+    # NOTE: Relax Bun version check to be a warning instead of an error
     substituteInPlace packages/script/src/index.ts \
-      --replace-fail "if (process.versions.bun !== expectedBunVersion)" "if (false)"
+      --replace-fail 'throw new Error(`This script requires bun@''${expectedBunVersionRange}' \
+                     'console.warn(`Warning: This script requires bun@''${expectedBunVersionRange}'
   '';
 
   configurePhase = ''
     runHook preConfigure
 
-    cd packages/opencode
     cp -R ${finalAttrs.node_modules}/. .
-
-    chmod -R u+w ./node_modules
-    # Make symlinks absolute to avoid issues with bun build
-    rm ./node_modules/@opencode-ai/script
-    ln -s $(pwd)/../../packages/script ./node_modules/@opencode-ai/script
-    rm -f ./node_modules/@opencode-ai/sdk
-    ln -s $(pwd)/../../packages/sdk/js ./node_modules/@opencode-ai/sdk
-    rm -f ./node_modules/@opencode-ai/plugin
-    ln -s $(pwd)/../../packages/plugin ./node_modules/@opencode-ai/plugin
 
     runHook postConfigure
   '';
@@ -115,37 +103,50 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   buildPhase = ''
     runHook preBuild
 
-    bun run ./script/build.ts --single
+    cd ./packages/opencode
+    bun --bun ./script/build.ts --single --skip-install
+    bun --bun ./script/schema.ts schema.json
 
     runHook postBuild
   '';
-
-  dontStrip = true;
 
   installPhase = ''
     runHook preInstall
 
     install -Dm755 dist/opencode-*/bin/opencode $out/bin/opencode
+    wrapProgram $out/bin/opencode \
+     --prefix PATH : ${
+       lib.makeBinPath (
+         [
+           ripgrep
+         ]
+         ++ lib.optionals stdenvNoCC.hostPlatform.isDarwin [
+           sysctl
+         ]
+       )
+     }
+
+    install -Dm644 schema.json $out/share/opencode/schema.json
 
     runHook postInstall
   '';
 
-  postInstall = ''
-    wrapProgram $out/bin/opencode \
-      --prefix PATH : ${
-        lib.makeBinPath [
-          fzf
-          ripgrep
-        ]
-      }
+  postInstall = lib.optionalString (stdenvNoCC.buildPlatform.canExecute stdenvNoCC.hostPlatform) ''
+    installShellCompletion --cmd opencode \
+      --bash <($out/bin/opencode completion) \
+      --zsh <(SHELL=/bin/zsh $out/bin/opencode completion)
   '';
 
+  nativeInstallCheckInputs = [
+    versionCheckHook
+    writableTmpDirAsHomeHook
+  ];
+  doInstallCheck = true;
+  versionCheckKeepEnvironment = [ "HOME" ];
+  versionCheckProgramArg = "--version";
+
   passthru = {
-    tests.version = testers.testVersion {
-      package = finalAttrs.finalPackage;
-      command = "HOME=$(mktemp -d) opencode --version";
-      inherit (finalAttrs) version;
-    };
+    jsonschema = "${placeholder "out"}/share/opencode/schema.json";
     updateScript = nix-update-script {
       extraArgs = [
         "--subpackage"
@@ -156,18 +157,19 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
   meta = {
     description = "AI coding agent built for the terminal";
-    longDescription = ''
-      OpenCode is a terminal-based agent that can build anything.
-      It combines a TypeScript/JavaScript core with a Go-based TUI
-      to provide an interactive AI coding experience.
-    '';
-    homepage = "https://github.com/sst/opencode";
+    homepage = "https://github.com/anomalyco/opencode";
     license = lib.licenses.mit;
-    platforms = lib.platforms.unix;
-    mainProgram = "opencode";
-    badPlatforms = [
-      # Problems with bun >= 1.3.2, see https://github.com/oven-sh/bun/issues/24645
-      lib.systems.inspect.patterns.isDarwin
+    maintainers = with lib.maintainers; [
+      delafthi
+      graham33
     ];
+    sourceProvenance = with lib.sourceTypes; [ fromSource ];
+    platforms = [
+      "aarch64-linux"
+      "x86_64-linux"
+      "aarch64-darwin"
+      "x86_64-darwin"
+    ];
+    mainProgram = "opencode";
   };
 })

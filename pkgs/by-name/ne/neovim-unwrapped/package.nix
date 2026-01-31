@@ -34,7 +34,7 @@ stdenv.mkDerivation (
         let
           luaLibDir = "$out/lib/lua/${lib.versions.majorMinor luapkgs.lua.luaversion}";
         in
-        (luapkgs.lpeg.overrideAttrs (oa: {
+        (luapkgs.lpeg.overrideAttrs (old: {
           preConfigure = ''
             # neovim wants clang .dylib
             substituteInPlace Makefile \
@@ -53,7 +53,7 @@ stdenv.mkDerivation (
             rm -f ${luaLibDir}/lpeg.so
           '';
           nativeBuildInputs =
-            oa.nativeBuildInputs ++ (lib.optional stdenv.hostPlatform.isDarwin fixDarwinDylibNames);
+            old.nativeBuildInputs ++ (lib.optional stdenv.hostPlatform.isDarwin fixDarwinDylibNames);
         }))
       else
         luapkgs.lpeg;
@@ -95,7 +95,7 @@ stdenv.mkDerivation (
   in
   {
     pname = "neovim-unwrapped";
-    version = "0.11.5";
+    version = "0.11.6";
 
     __structuredAttrs = true;
 
@@ -103,8 +103,10 @@ stdenv.mkDerivation (
       owner = "neovim";
       repo = "neovim";
       tag = "v${finalAttrs.version}";
-      hash = "sha256-OsvLB9kynCbQ8PDQ2VQ+L56iy7pZ0ZP69J2cEG8Ad8A=";
+      hash = "sha256-GdfCaKNe/qPaUV2NJPXY+ATnQNWnyFTFnkOYDyLhTNg=";
     };
+
+    strictDeps = true;
 
     patches = [
       # introduce a system-wide rplugin.vim in addition to the user one
@@ -143,6 +145,10 @@ stdenv.mkDerivation (
     ++ lib.optionals finalAttrs.finalPackage.doCheck [
       glibcLocales
       procps
+    ]
+    ++ lib.optionals (stdenv.hostPlatform.libc != "glibc") [
+      # Provide libintl for non-glibc platforms
+      gettext
     ];
 
     doCheck = false;
@@ -236,7 +242,6 @@ stdenv.mkDerivation (
       versionCheckHook
     ];
     versionCheckProgram = "${placeholder "out"}/bin/nvim";
-    versionCheckProgramArg = "--version";
     doInstallCheck = true;
 
     passthru = {

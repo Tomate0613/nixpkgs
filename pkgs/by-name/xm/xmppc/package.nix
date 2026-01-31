@@ -10,7 +10,7 @@
   gpgme,
 }:
 
-stdenv.mkDerivation rec {
+stdenv.mkDerivation (finalAttrs: {
   pname = "xmppc";
   version = "0.1.2";
 
@@ -18,7 +18,7 @@ stdenv.mkDerivation rec {
     domain = "codeberg.org";
     owner = "Anoxinon_e.V.";
     repo = "xmppc";
-    rev = version;
+    rev = finalAttrs.version;
     sha256 = "07cy3j4g7vycagdiva3dqb59361lw7s5f2yydpczmyih29v7hkm8";
   };
 
@@ -38,12 +38,12 @@ stdenv.mkDerivation rec {
     mkdir m4
   '';
 
-  meta = with lib; {
+  meta = {
     description = "Command Line Interface Tool for XMPP";
     mainProgram = "xmppc";
     homepage = "https://codeberg.org/Anoxinon_e.V./xmppc";
-    license = licenses.gpl3Plus;
-    platforms = platforms.unix;
-    maintainers = [ maintainers.jugendhacker ];
+    license = lib.licenses.gpl3Plus;
+    platforms = lib.platforms.unix;
+    maintainers = [ lib.maintainers.jugendhacker ];
   };
-}
+})

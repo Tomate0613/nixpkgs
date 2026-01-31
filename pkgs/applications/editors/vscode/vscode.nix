@@ -2,7 +2,7 @@
   lib,
   stdenv,
   stdenvNoCC,
-  callPackage,
+  buildVscode,
   fetchurl,
   nixosTests,
   srcOnly,
@@ -36,22 +36,22 @@ let
 
   hash =
     {
-      x86_64-linux = "sha256-zQ6HHayJy48g/0viZRWm2Ea3Oy50LLkLhSjum68HETk=";
-      x86_64-darwin = "sha256-nl4Dn1xiXKZbbKfBHx92h4cxlNTQ7ManVg1LyYvd1xQ=";
-      aarch64-linux = "sha256-Yxr2JgpE6nW1B9iCpu8zDHpKHkDr0yy5gQRjNsq73tc=";
-      aarch64-darwin = "sha256-iElSgv6jjmKoVZqrZ1ET2EnwyZfiaXkfx9xlSgsUsTc=";
-      armv7l-linux = "sha256-M0ZkHHnJB/BtRagJjCi3yfhKz8B4v79IYuiaqdmPrkg=";
+      x86_64-linux = "sha256-RqBae6s6y2XnXqtKbrKkMRwALKLfNE7mBFwOwwomG10=";
+      x86_64-darwin = "sha256-3N7xZIJsgQPX6izaH8ZoXy3SLcbXCNwJvE8ahFwVfF8=";
+      aarch64-linux = "sha256-8WigXl83hXEA7qsG6dOYKVSVISRDDpqJyv7L+9ks40Q=";
+      aarch64-darwin = "sha256-ZJ0QKqkFQYz3V7TEalM3sFJnqYnKBgQVqPXdsi2c+80=";
+      armv7l-linux = "sha256-m78hRkaI1nlqdeeP3t0HiNCUzNneMXxyenC8RmtuC68=";
     }
     .${system} or throwSystem;
 
   # Please backport all compatible updates to the stable release.
   # This is important for the extension ecosystem.
-  version = "1.106.1";
+  version = "1.108.2";
 
   # This is used for VS Code - Remote SSH test
-  rev = "cb1933bbc38d329b3595673a600fab5c7368f0a7";
+  rev = "c9d77990917f3102ada88be140d28b038d1dd7c7";
 in
-callPackage ./generic.nix {
+buildVscode {
   pname = "vscode" + lib.optionalString isInsiders "-insiders";
 
   executableName = "code" + lib.optionalString isInsiders "-insiders";
@@ -82,7 +82,7 @@ callPackage ./generic.nix {
     src = fetchurl {
       name = "vscode-server-${rev}.tar.gz";
       url = "https://update.code.visualstudio.com/commit:${rev}/server-linux-x64/stable";
-      hash = "sha256-HYyzA5qfE7CHFqenBjPCe9QhANP0mOgUoORRm/QvxVk=";
+      hash = "sha256-bUnM+editWCYiiqR3mlIw4BRrM5gHd6T2GO65VKTDSE=";
     };
     stdenv = stdenvNoCC;
   };

@@ -67,6 +67,9 @@ stdenv.mkDerivation rec {
     openexr
   ];
 
+  # Gcc blindly tries to optimize all float operations instead of just marked ones.
+  # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=122304
+  CXXFLAGS = "-ffp-contract=on";
   cmakeFlags = [
     "-DOCIO_INSTALL_EXT_PACKAGES=NONE"
     "-DOCIO_USE_SSE2NEON=OFF"
@@ -82,11 +85,11 @@ stdenv.mkDerivation rec {
   # Tends to fail otherwise.
   enableParallelChecking = false;
 
-  meta = with lib; {
+  meta = {
     homepage = "https://opencolorio.org";
     description = "Color management framework for visual effects and animation";
-    license = licenses.bsd3;
-    maintainers = [ maintainers.rytone ];
-    platforms = platforms.unix;
+    license = lib.licenses.bsd3;
+    maintainers = [ lib.maintainers.rytone ];
+    platforms = lib.platforms.unix;
   };
 }

@@ -1,49 +1,60 @@
 {
   lib,
   stdenv,
-  callPackage,
-  vscode-generic,
+  buildVscode,
   fetchurl,
+  jq,
+  writeShellScript,
+  coreutils,
   commandLineArgs ? "",
   useVSCodeRipgrep ? stdenv.hostPlatform.isDarwin,
 }:
 
 let
   inherit (stdenv) hostPlatform;
-
-  sources =
-    (lib.importJSON ./sources.json)."${hostPlatform.system}"
+  information = (lib.importJSON ./information.json);
+  source =
+    information.sources."${hostPlatform.system}"
       or (throw "antigravity: unsupported system ${hostPlatform.system}");
-
-  version = "1.11.3";
-  vscodeVersion = "1.104.0";
 in
-callPackage vscode-generic {
-  inherit
-    commandLineArgs
-    useVSCodeRipgrep
-    version
-    vscodeVersion
-    ;
-
+(buildVscode {
+  inherit commandLineArgs useVSCodeRipgrep;
+  inherit (information) version vscodeVersion;
   pname = "antigravity";
 
   executableName = "antigravity";
-  longName = "Google Antigravity";
+  longName = "Antigravity";
   shortName = "Antigravity";
   libraryName = "antigravity";
   iconName = "antigravity";
 
-  src = fetchurl {
-    inherit (sources) url hash;
-  };
+  src = fetchurl { inherit (source) url sha256; };
 
   sourceRoot = if hostPlatform.isDarwin then "Antigravity.app" else "Antigravity";
 
   tests = { };
-  updateScript = ./update.sh;
+  updateScript = ./update.js;
 
-  dontFixup = hostPlatform.isDarwin;
+  # When running inside an FHS environment, try linking Google Chrome or Chromium
+  # to the hardcoded Playwright search path: /opt/google/chrome/chrome
+  customizeFHSEnv =
+    args:
+    args
+    // {
+      extraBwrapArgs = (args.extraBwrapArgs or [ ]) ++ [ "--tmpfs /opt/google/chrome" ];
+      extraBuildCommands = (args.extraBuildCommands or "") + ''
+        mkdir -p "$out/opt/google/chrome"
+      '';
+      runScript = writeShellScript "antigravity-wrapper" ''
+        for candidate in google-chrome-stable google-chrome chromium-browser chromium; do
+          if target=$(command -v "$candidate"); then
+            ${coreutils}/bin/ln -sf "$target" /opt/google/chrome/chrome
+            break
+          fi
+        done
+        exec ${args.runScript} "$@"
+      '';
+    };
 
   meta = {
     mainProgram = "antigravity";
@@ -64,4 +75,15 @@ callPackage vscode-generic {
       Zaczero
     ];
   };
-}
+}).overrideAttrs
+  (oldAttrs: {
+    # Disable update checks
+    nativeBuildInputs = (oldAttrs.nativeBuildInputs or [ ]) ++ [ jq ];
+    postPatch = (oldAttrs.postPatch or "") + ''
+      productJson="${
+        if stdenv.hostPlatform.isDarwin then "Contents/Resources" else "resources"
+      }/app/product.json"
+      data=$(jq 'del(.updateUrl)' "$productJson")
+      echo "$data" > "$productJson"
+    '';
+  })
