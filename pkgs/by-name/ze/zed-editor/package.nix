@@ -15,6 +15,7 @@
   sqlite,
   zlib,
   zstd,
+  glib,
   alsa-lib,
   libxkbcommon,
   wayland,
@@ -107,7 +108,7 @@ let
 in
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "zed-editor";
-  version = "0.224.11";
+  version = "0.228.0";
 
   outputs = [
     "out"
@@ -120,18 +121,24 @@ rustPlatform.buildRustPackage (finalAttrs: {
     owner = "zed-industries";
     repo = "zed";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-VOPAypHlcr7nY3/wk4ec/Ltv+DUf/v4rHDa5oCsg0aE=";
+    hash = "sha256-oQ3cW4cFBkyrO4elTXB3Etek6ilL0XkB45z/tuPwTJs=";
   };
 
   postPatch = ''
     # Dynamically link WebRTC instead of static
-    substituteInPlace $cargoDepsCopy/webrtc-sys-*/build.rs \
+    substituteInPlace $cargoDepsCopy/*/webrtc-sys-*/build.rs \
       --replace-fail "cargo:rustc-link-lib=static=webrtc" "cargo:rustc-link-lib=dylib=webrtc"
 
     # The generate-licenses script wants a specific version of cargo-about eventhough
     # newer versions work just as well.
     substituteInPlace script/generate-licenses \
       --replace-fail '$CARGO_ABOUT_VERSION' '${cargo-about.version}'
+  ''
+  + lib.optionalString stdenv.hostPlatform.isLinux ''
+    # webrtc-sys expects glib headers to be in the sysroot, so we have to point it in the right direction
+    substituteInPlace $cargoDepsCopy/*/webrtc-sys-*/build.rs \
+      --replace-fail 'builder.include(&glib_path);' 'builder.include("${lib.getInclude glib}/include/glib-2.0");' \
+      --replace-fail 'builder.include(&glib_path_config);' 'builder.include("${lib.getLib glib}/lib/glib-2.0/include");'
   '';
 
   # remove package that has a broken Cargo.toml
@@ -140,7 +147,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
     rm -r $out/git/*/candle-book/
   '';
 
-  cargoHash = "sha256-V61uZEl6LG/xckOajcWugf/K+mJR8Bn9WjqxvvwBbfw=";
+  cargoHash = "sha256-K4lxI11fEuLYBWy6Z+o0MmtJFJYawwS4UUq0Jgue2hE=";
 
   nativeBuildInputs = [
     cmake
@@ -168,6 +175,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
     zstd
   ]
   ++ lib.optionals stdenv.hostPlatform.isLinux [
+    glib
     alsa-lib
     libxkbcommon
     wayland
@@ -192,11 +200,11 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   # Required on darwin because we don't have access to the
   # proprietary Metal shader compiler.
-  buildFeatures = lib.optionals stdenv.hostPlatform.isDarwin [ "gpui/runtime_shaders" ];
+  buildFeatures = lib.optionals stdenv.hostPlatform.isDarwin [ "gpui_platform/runtime_shaders" ];
 
   # Some crates define extra types or enum values in test configuration which then lead
   # to type checking errors in other crates unless this feature is enabled.
-  # gpui/runtime_shaders is required on darwin for the same reason as buildFeatures above:
+  # gpui_platform/runtime_shaders is required on darwin for the same reason as buildFeatures above:
   # without it, build.rs invokes the proprietary Metal shader compiler.
   checkFeatures = [
     "visual-tests"

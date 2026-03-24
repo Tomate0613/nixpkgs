@@ -9,12 +9,12 @@
 
 buildPythonPackage rec {
   pname = "stripe";
-  version = "14.2.0";
+  version = "14.4.1";
   pyproject = true;
 
   src = fetchPypi {
     inherit pname version;
-    hash = "sha256-nHB8sFA+F5wtnxhzHpTxMzcFtc2dyq5pLbCZla0o1BE=";
+    hash = "sha256-4+7PszaBkybNKrmpP5jrAbScTU2TydFnpSpoq5nBmog=";
   };
 
   build-system = [ flit-core ];

@@ -119,6 +119,9 @@
   "ex-testEqualArrayOrMap-test-function-add-cowbell": [
     "index.html#ex-testEqualArrayOrMap-test-function-add-cowbell"
   ],
+  "ex-writeShellApplication": [
+    "index.html#ex-writeShellApplication"
+  ],
   "friction-graphics": [
     "index.html#friction-graphics"
   ],
@@ -695,6 +698,9 @@
   "footnote-stdenv-find-inputs-location.__back.0": [
     "index.html#footnote-stdenv-find-inputs-location.__back.0"
   ],
+  "sssec-testing-octave-packages": [
+    "index.html#sssec-testing-octave-packages"
+  ],
   "strictflexarrays1": [
     "index.html#strictflexarrays1"
   ],
@@ -868,6 +874,9 @@
   ],
   "tar-files": [
     "index.html#tar-files"
+  ],
+  "x86_64-darwin-26.05": [
+    "release-notes.html#x86_64-darwin-26.05"
   ],
   "zip-files": [
     "index.html#zip-files"

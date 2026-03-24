@@ -3,6 +3,7 @@
   stdenv,
   autoPatchelfHook,
   fetchurl,
+  makeBinaryWrapper,
   versionCheckHook,
 }:
 
@@ -21,19 +22,29 @@ stdenv.mkDerivation (finalAttrs: {
     inherit (srcConfig) hash;
   };
 
-  nativeBuildInputs = lib.optionals stdenv.hostPlatform.isLinux [ autoPatchelfHook ];
+  nativeBuildInputs = [
+    makeBinaryWrapper
+  ]
+  ++ lib.optionals stdenv.hostPlatform.isLinux [ autoPatchelfHook ];
   buildInputs = lib.optionals stdenv.hostPlatform.isLinux [ stdenv.cc.cc.lib ];
   sourceRoot = ".";
   dontStrip = true;
 
   installPhase = ''
     runHook preInstall
-    install -Dm755 copilot $out/bin/copilot
+    # Use libexec to preserve filename when calling makeBinaryWrapper
+    install -Dm755 copilot $out/libexec/copilot
     runHook postInstall
   '';
 
+  postInstall = ''
+    # Filename must explictly be "copilot" for internal self-referencing
+    makeWrapper $out/libexec/copilot $out/bin/copilot \
+      --add-flags "--no-auto-update"
+  '';
+
   nativeInstallCheckInputs = [ versionCheckHook ];
-  doInstallCheck = true;
+  doInstallCheck = !stdenv.hostPlatform.isDarwin; # skip on Darwin - OpenSSL errors in sandbox
 
   passthru.updateScript = ./update.sh;
 

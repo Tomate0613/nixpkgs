@@ -9,12 +9,12 @@
 }:
 let
   pname = "models-dev";
-  version = "0-unstable-2026-02-21";
+  version = "0-unstable-2026-03-17";
   src = fetchFromGitHub {
     owner = "anomalyco";
     repo = "models.dev";
-    rev = "c36b8e94339b004bddc0d84f816bcac14babe1ba";
-    hash = "sha256-z8yswVNWuf/aDbwirp99nCw4VCfzCVIOB4+5s5CKo3I=";
+    rev = "7d3cc61a48f545739f05042b43110ea11147ac03";
+    hash = "sha256-Iyg1IAp3AiqxPqYil/ZhH7dXxkwxW9B3t3LwYMTiRjE=";
   };
 
   node_modules = stdenvNoCC.mkDerivation {

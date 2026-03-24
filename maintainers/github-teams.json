@@ -196,7 +196,6 @@
       "Moraxyc": 69713071,
       "Prince213": 25235514,
       "Samasaur1": 30577766,
-      "Sciencentistguy": 4983935,
       "Steven0351": 24440751,
       "afh": 16507,
       "azuwis": 9315,
@@ -220,6 +219,7 @@
       "gshpychka": 23005347,
       "hexagonal-sun": 222664,
       "heywoodlh": 18178614,
+      "iamanaws": 78835633,
       "isabelroses": 71222764,
       "jonhermansen": 660911,
       "juliusrickert": 5007494,
@@ -230,6 +230,7 @@
       "kloenk": 12898828,
       "konradmalik": 13033392,
       "kubukoz": 894884,
+      "lilyball": 714,
       "lutzmor": 9321736,
       "magistau": 43097806,
       "maljub01": 350635,
@@ -248,6 +249,7 @@
       "samrose": 115821,
       "sarahec": 11277967,
       "shaunsingh": 71196912,
+      "shunueda": 62182668,
       "sikmir": 688044,
       "siraben": 8219659,
       "siriobalmelli": 23038812,
@@ -267,6 +269,7 @@
       "willcohen": 5185341,
       "willjr": 5904828,
       "wldhx": 15619766,
+      "yamashitax": 99486674,
       "yeongsheng-tan": 809030,
       "youhaveme9": 58213083,
       "yzx9": 41458459,
@@ -277,9 +280,11 @@
   "documentation-team": {
     "description": "Maintain nixpkgs/NixOS documentation and tools for building it. https://nixos.org/community/teams/documentation",
     "id": 6590023,
-    "maintainers": {},
+    "maintainers": {
+      "hsjobeki": 50398876
+    },
     "members": {
-      "hsjobeki": 50398876,
+      "friedow": 17351844,
       "wamirez": 24505474
     },
     "name": "Documentation Team"
@@ -547,7 +552,6 @@
       "lf-": 6652840
     },
     "members": {
-      "9999years": 15312184,
       "Qyriad": 1542224,
       "RaitoBezarius": 314564
     },
@@ -614,9 +618,8 @@
     },
     "members": {
       "aanderse": 7755101,
-      "jnsgruk": 668505,
-      "megheaiulian": 1788114,
-      "mkg20001": 7735145
+      "herbetom": 15121114,
+      "megheaiulian": 1788114
     },
     "name": "LXC"
   },
@@ -636,6 +639,7 @@
       "djacu": 7043297
     },
     "members": {
+      "Sigmanificient": 53050011,
       "flyfloh": 74379,
       "thilobillerbeck": 7442383
     },
@@ -681,12 +685,11 @@
     "description": "Maintain the official Nix formatter and apply it to Nixpkgs: https://nixos.org/community/teams/formatting/",
     "id": 9676823,
     "maintainers": {
-      "infinisil": 20525370,
+      "MattSturgeon": 5046562,
       "jfly": 277474
     },
     "members": {
       "0x4A6F": 9675338,
-      "MattSturgeon": 5046562,
       "Sereja313": 112060595,
       "dyegoaurelio": 42411160
     },
@@ -713,7 +716,7 @@
     "id": 3620128,
     "maintainers": {
       "jopejoe1": 34899572,
-      "leona-ya": 11006031
+      "yayayayaka": 73759599
     },
     "members": {},
     "name": "nixos-release-managers"
@@ -916,6 +919,18 @@
     },
     "name": "SDL"
   },
+  "security-review": {
+    "description": "Reviews changes to core packages for Nixpkgs security vulnerabilities: https://github.com/NixOS/nixpkgs/issues/494349",
+    "id": 16430758,
+    "maintainers": {
+      "balsoft": 18467667,
+      "infinisil": 20525370
+    },
+    "members": {
+      "pyrox0": 35778371
+    },
+    "name": "Security review"
+  },
   "static": {
     "description": "People interested in static builds (creation of `.a` files, fully static executables, etc.) and keeping them working",
     "id": 5906550,
@@ -955,7 +970,8 @@
     "description": "Maintain systemd for NixOS",
     "id": 3894007,
     "maintainers": {
-      "flokli": 183879
+      "flokli": 183879,
+      "nikstur": 61635709
     },
     "members": {
       "ElvishJerricco": 1365692,

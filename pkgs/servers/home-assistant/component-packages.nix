@@ -2,7 +2,7 @@
 # Do not edit!
 
 {
-  version = "2026.2.3";
+  version = "2026.3.3";
   components = {
     "3_day_blinds" =
       ps: with ps; [
@@ -469,11 +469,11 @@
         hass-nabucasa
         hassil
         home-assistant-intents
+        matter-python-client
         mutagen
         openai
         pymicro-vad
         pyspeex-noise
-        python-matter-server
         pyturbojpeg
         securetar
         yalexs
@@ -524,6 +524,9 @@
     "aws_s3" =
       ps: with ps; [
         aiobotocore
+        aiohasupervisor
+        cronsim
+        securetar
       ];
     "axis" =
       ps: with ps; [
@@ -759,6 +762,9 @@
         ifaddr
         zeroconf
       ];
+    "brands" =
+      ps: with ps; [
+      ];
     "brandt" =
       ps: with ps; [
       ];
@@ -886,6 +892,7 @@
         hassil
         home-assistant-intents
         ifaddr
+        matter-python-client
         mutagen
         openai
         plexapi
@@ -894,7 +901,6 @@
         pychromecast
         pymicro-vad
         pyspeex-noise
-        python-matter-server
         pyturbojpeg
         securetar
         zeroconf
@@ -954,11 +960,11 @@
         hass-nabucasa
         hassil
         home-assistant-intents
+        matter-python-client
         mutagen
         openai
         pymicro-vad
         pyspeex-noise
-        python-matter-server
         pyturbojpeg
         securetar
       ];
@@ -1157,6 +1163,7 @@
         home-assistant-frontend
         home-assistant-intents
         ifaddr
+        matter-python-client
         mutagen
         numpy
         openai
@@ -1166,7 +1173,6 @@
         pynacl
         pyserial
         pyspeex-noise
-        python-matter-server
         pyturbojpeg
         securetar
         sqlalchemy
@@ -1559,7 +1565,9 @@
       ];
     "enocean" =
       ps: with ps; [
+        aiousbwatcher
         enocean
+        pyserial
       ];
     "enphase_envoy" =
       ps: with ps; [
@@ -2093,6 +2101,9 @@
       ps: with ps; [
         aio-geojson-geonetnz-volcano
       ];
+    "ghost" =
+      ps: with ps; [
+      ]; # missing inputs: aioghost
     "gios" =
       ps: with ps; [
         gios
@@ -2143,7 +2154,7 @@
     "google_assistant" =
       ps: with ps; [
         aiohasupervisor
-        python-matter-server
+        matter-python-client
         pyturbojpeg
       ];
     "google_assistant_sdk" =
@@ -2291,7 +2302,8 @@
       ];
     "hanna" =
       ps: with ps; [
-      ]; # missing inputs: hanna-cloud
+        hanna-cloud
+      ];
     "hardkernel" =
       ps: with ps; [
         aiohasupervisor
@@ -2337,6 +2349,9 @@
       ps: with ps; [
         heatmiserv3
       ];
+    "hegel" =
+      ps: with ps; [
+      ]; # missing inputs: hegel-ip-client
     "heicko" =
       ps: with ps; [
       ];
@@ -2517,6 +2532,10 @@
       ps: with ps; [
         homematicip
       ];
+    "homevolt" =
+      ps: with ps; [
+        homevolt
+      ];
     "homewizard" =
       ps: with ps; [
         python-homewizard-energy
@@ -2539,6 +2558,7 @@
       ];
     "html5" =
       ps: with ps; [
+        py-vapid
         pywebpush
       ];
     "http" =
@@ -2642,6 +2662,9 @@
       ps: with ps; [
         hyperion-py
       ];
+    "hypontech" =
+      ps: with ps; [
+      ]; # missing inputs: hyponcloud
     "ialarm" =
       ps: with ps; [
         pyialarm
@@ -2712,6 +2735,11 @@
         pyserial
         pyspeex-noise
         zeroconf
+      ];
+    "idrive_e2" =
+      ps: with ps; [
+        aiobotocore
+        idrive-e2-client
       ];
     "idteck_prox" =
       ps: with ps; [
@@ -2796,6 +2824,10 @@
       ps: with ps; [
         incomfort-client
       ];
+    "indevolt" =
+      ps: with ps; [
+        indevolt-api
+      ];
     "indianamichiganpower" =
       ps: with ps; [
       ];
@@ -2869,6 +2901,9 @@
     "integration" =
       ps: with ps; [
       ];
+    "intelliclima" =
+      ps: with ps; [
+      ]; # missing inputs: pyintelliclima
     "intellifire" =
       ps: with ps; [
         intellifire4py
@@ -3387,6 +3422,10 @@
       ps: with ps; [
         aiopyarr
       ];
+    "liebherr" =
+      ps: with ps; [
+        pyliebherrhomeapi
+      ];
     "life360" =
       ps: with ps; [
       ];
@@ -3504,11 +3543,11 @@
         hassil
         home-assistant-intents
         loqedapi
+        matter-python-client
         mutagen
         openai
         pymicro-vad
         pyspeex-noise
-        python-matter-server
         pyturbojpeg
         securetar
       ];
@@ -3592,7 +3631,7 @@
     "matter" =
       ps: with ps; [
         aiohasupervisor
-        python-matter-server
+        matter-python-client
       ];
     "maxcube" =
       ps: with ps; [
@@ -3833,13 +3872,13 @@
         hass-nabucasa
         hassil
         home-assistant-intents
+        matter-python-client
         mutagen
         openai
         pillow
         pymicro-vad
         pynacl
         pyspeex-noise
-        python-matter-server
         pyturbojpeg
         securetar
       ];
@@ -3986,6 +4025,9 @@
       ps: with ps; [
         pymsteams
       ];
+    "mta" =
+      ps: with ps; [
+      ]; # missing inputs: py-nymta
     "mullvad" =
       ps: with ps; [
         mullvad-api
@@ -4000,11 +4042,15 @@
       ];
     "mvglive" =
       ps: with ps; [
-      ]; # missing inputs: mvg
+        mvg
+      ];
     "my" =
       ps: with ps; [
         home-assistant-frontend
       ];
+    "myneomitis" =
+      ps: with ps; [
+      ]; # missing inputs: pyaxencoapi
     "myq" =
       ps: with ps; [
       ];
@@ -4039,8 +4085,7 @@
       ];
     "nanoleaf" =
       ps: with ps; [
-        aionanoleaf
-      ];
+      ]; # missing inputs: aionanoleaf2
     "nasweb" =
       ps: with ps; [
         webio-api
@@ -4079,12 +4124,12 @@
         hass-nabucasa
         hassil
         home-assistant-intents
+        matter-python-client
         mutagen
         openai
         pyatmo
         pymicro-vad
         pyspeex-noise
-        python-matter-server
         pyturbojpeg
         securetar
       ];
@@ -4329,12 +4374,29 @@
         hass-nabucasa
         hassil
         home-assistant-intents
+        matter-python-client
         mutagen
         onedrive-personal-sdk
         openai
         pymicro-vad
         pyspeex-noise
-        python-matter-server
+        pyturbojpeg
+        securetar
+      ];
+    "onedrive_for_business" =
+      ps: with ps; [
+        aiohasupervisor
+        cronsim
+        ha-ffmpeg
+        hass-nabucasa
+        hassil
+        home-assistant-intents
+        matter-python-client
+        mutagen
+        onedrive-personal-sdk
+        openai
+        pymicro-vad
+        pyspeex-noise
         pyturbojpeg
         securetar
       ];
@@ -4388,8 +4450,9 @@
     "openevse" =
       ps: with ps; [
         ifaddr
+        python-openevse-http
         zeroconf
-      ]; # missing inputs: python-openevse-http
+      ];
     "openexchangerates" =
       ps: with ps; [
         aioopenexchangerates
@@ -4525,11 +4588,11 @@
         hass-nabucasa
         hassil
         home-assistant-intents
+        matter-python-client
         mutagen
         openai
         pymicro-vad
         pyspeex-noise
-        python-matter-server
         python-overseerr
         pyturbojpeg
         securetar
@@ -4546,13 +4609,13 @@
         hass-nabucasa
         hassil
         home-assistant-intents
+        matter-python-client
         mutagen
         openai
         paho-mqtt
         pymicro-vad
         pynacl
         pyspeex-noise
-        python-matter-server
         pyturbojpeg
         securetar
       ];
@@ -4672,12 +4735,12 @@
         hass-nabucasa
         hassil
         home-assistant-intents
+        matter-python-client
         mutagen
         openai
         pymicro-vad
         pyplaato
         pyspeex-noise
-        python-matter-server
         pyturbojpeg
         securetar
       ];
@@ -4729,6 +4792,10 @@
       ps: with ps; [
       ];
     "powerfox" =
+      ps: with ps; [
+        powerfox
+      ];
+    "powerfox_local" =
       ps: with ps; [
         powerfox
       ];
@@ -4975,11 +5042,11 @@
         hass-nabucasa
         hassil
         home-assistant-intents
+        matter-python-client
         mutagen
         openai
         pymicro-vad
         pyspeex-noise
-        python-matter-server
         pyturbojpeg
         rachiopy
         securetar
@@ -5078,20 +5145,6 @@
       ];
     "recovery_mode" =
       ps: with ps; [
-        aiohasupervisor
-        cronsim
-        ha-ffmpeg
-        hass-nabucasa
-        hassil
-        home-assistant-frontend
-        home-assistant-intents
-        mutagen
-        openai
-        pymicro-vad
-        pyspeex-noise
-        python-matter-server
-        pyturbojpeg
-        securetar
       ];
     "recswitch" =
       ps: with ps; [
@@ -5101,6 +5154,9 @@
       ps: with ps; [
         praw
       ];
+    "redgtech" =
+      ps: with ps; [
+      ]; # missing inputs: redgtech-api
     "refoss" =
       ps: with ps; [
         refoss-ha
@@ -6045,6 +6101,9 @@
         psutil
         psutil-home-assistant
       ];
+    "systemnexa2" =
+      ps: with ps; [
+      ]; # missing inputs: python-sn2
     "tado" =
       ps: with ps; [
         python-tado
@@ -6126,6 +6185,10 @@
       ];
     "telnet" =
       ps: with ps; [
+      ];
+    "teltonika" =
+      ps: with ps; [
+        teltasync
       ];
     "temper" =
       ps: with ps; [
@@ -6341,11 +6404,11 @@
         hass-nabucasa
         hassil
         home-assistant-intents
+        matter-python-client
         mutagen
         openai
         pymicro-vad
         pyspeex-noise
-        python-matter-server
         pyturbojpeg
         securetar
         toonapi
@@ -6425,6 +6488,9 @@
       ps: with ps; [
         pytrafikverket
       ];
+    "trane" =
+      ps: with ps; [
+      ]; # missing inputs: steamloop
     "transmission" =
       ps: with ps; [
         transmission-rpc
@@ -6454,7 +6520,7 @@
       ps: with ps; [
         ha-ffmpeg
         tuya-device-sharing-sdk
-      ];
+      ]; # missing inputs: tuya-device-handlers
     "twentemilieu" =
       ps: with ps; [
         twentemilieu
@@ -6495,7 +6561,8 @@
       ];
     "uhoo" =
       ps: with ps; [
-      ]; # missing inputs: uhooapi
+        uhooapi
+      ];
     "uk_transport" =
       ps: with ps; [
       ];
@@ -6678,8 +6745,9 @@
         pymicro-vad
         pyserial
         pyspeex-noise
+        victron-ble-ha-parser
         zeroconf
-      ]; # missing inputs: victron-ble-ha-parser
+      ];
     "victron_remote_monitoring" =
       ps: with ps; [
         victron-vrm
@@ -6775,11 +6843,11 @@
         hass-nabucasa
         hassil
         home-assistant-intents
+        matter-python-client
         mutagen
         openai
         pymicro-vad
         pyspeex-noise
-        python-matter-server
         pyturbojpeg
         securetar
         visionpluspython
@@ -6868,11 +6936,11 @@
         hass-nabucasa
         hassil
         home-assistant-intents
+        matter-python-client
         mutagen
         openai
         pymicro-vad
         pyspeex-noise
-        python-matter-server
         pyturbojpeg
         securetar
       ];
@@ -6997,11 +7065,11 @@
         hass-nabucasa
         hassil
         home-assistant-intents
+        matter-python-client
         mutagen
         openai
         pymicro-vad
         pyspeex-noise
-        python-matter-server
         pyturbojpeg
         securetar
         yalexs
@@ -7139,6 +7207,9 @@
       ps: with ps; [
         zcc-helper
       ];
+    "zinvolt" =
+      ps: with ps; [
+      ]; # missing inputs: zinvolt
     "zodiac" =
       ps: with ps; [
       ];
@@ -7271,6 +7342,7 @@
     "bond"
     "bosch_alarm"
     "bosch_shc"
+    "brands"
     "braviatv"
     "bring"
     "broadlink"
@@ -7505,6 +7577,7 @@
     "growatt_server"
     "guardian"
     "habitica"
+    "hanna"
     "hardkernel"
     "hardware"
     "harmony"
@@ -7535,6 +7608,7 @@
     "homekit_controller"
     "homematic"
     "homematicip_cloud"
+    "homevolt"
     "homewizard"
     "homeworks"
     "honeywell"
@@ -7557,6 +7631,7 @@
     "ibeacon"
     "icloud"
     "idasen_desk"
+    "idrive_e2"
     "ifttt"
     "igloohome"
     "ign_sismologia"
@@ -7569,6 +7644,7 @@
     "immich"
     "improv_ble"
     "incomfort"
+    "indevolt"
     "inels"
     "influxdb"
     "inkbird"
@@ -7640,6 +7716,7 @@
     "lg_thinq"
     "libre_hardware_monitor"
     "lidarr"
+    "liebherr"
     "life360"
     "lifx"
     "light"
@@ -7742,7 +7819,6 @@
     "myuplink"
     "nam"
     "namecheapdns"
-    "nanoleaf"
     "nasweb"
     "neato"
     "nederlandse_spoorwegen"
@@ -7793,6 +7869,7 @@
     "oncue"
     "ondilo_ico"
     "onedrive"
+    "onedrive_for_business"
     "onewire"
     "onkyo"
     "onvif"
@@ -7801,6 +7878,7 @@
     "openai_conversation"
     "openalpr_cloud"
     "openerz"
+    "openevse"
     "openexchangerates"
     "opengarage"
     "openhardwaremonitor"
@@ -7850,6 +7928,7 @@
     "poolsense"
     "portainer"
     "powerfox"
+    "powerfox_local"
     "powerwall"
     "private_ble_device"
     "probe_plus"
@@ -8002,6 +8081,7 @@
     "spc"
     "speedtestdotnet"
     "spider"
+    "splunk"
     "spotify"
     "sql"
     "squeezebox"
@@ -8053,6 +8133,7 @@
     "telegram"
     "telegram_bot"
     "tellduslive"
+    "teltonika"
     "temper"
     "template"
     "tesla_fleet"
@@ -8098,11 +8179,11 @@
     "trend"
     "triggercmd"
     "tts"
-    "tuya"
     "twentemilieu"
     "twilio"
     "twinkly"
     "twitch"
+    "uhoo"
     "uk_transport"
     "ukraine_alarm"
     "unifi"
@@ -8133,6 +8214,7 @@
     "version"
     "vesync"
     "vicare"
+    "victron_ble"
     "victron_remote_monitoring"
     "vilfo"
     "vivotek"
@@ -8205,6 +8287,7 @@
     "zimi"
     "zodiac"
     "zone"
+    "zoneminder"
     "zwave_js"
     "zwave_me"
   ];

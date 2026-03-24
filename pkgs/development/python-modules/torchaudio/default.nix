@@ -1,6 +1,5 @@
 {
   lib,
-  symlinkJoin,
   buildPythonPackage,
   fetchFromGitHub,
 
@@ -10,7 +9,6 @@
   ninja,
 
   # buildInputs
-  ffmpeg_6-full,
   pybind11,
   sox,
   torch,
@@ -20,62 +18,9 @@
   cudaPackages,
   rocmSupport ? torch.rocmSupport,
   rocmPackages,
-
-  gpuTargets ? [ ],
 }:
 
-let
-  # TODO: Reuse one defined in torch?
-  # Some of those dependencies are probably not required,
-  # but it breaks when the store path is different between torch and torchaudio
-  rocmtoolkit_joined = symlinkJoin {
-    name = "rocm-merged";
-
-    paths = with rocmPackages; [
-      rocm-core
-      clr
-      rccl
-      miopen
-      rocrand
-      rocblas
-      rocsparse
-      hipsparse
-      rocthrust
-      rocprim
-      hipcub
-      roctracer
-      rocfft
-      rocsolver
-      hipfft
-      hipsolver
-      hipblas-common
-      hipblas
-      rocminfo
-      rocm-comgr
-      rocm-device-libs
-      rocm-runtime
-      clr.icd
-      hipify
-    ];
-
-    # Fix `setuptools` not being found
-    postBuild = ''
-      rm -rf $out/nix-support
-    '';
-  };
-  # Only used for ROCm
-  gpuTargetString = lib.strings.concatStringsSep ";" (
-    if gpuTargets != [ ] then
-      # If gpuTargets is specified, it always takes priority.
-      gpuTargets
-    else if rocmSupport then
-      rocmPackages.clr.gpuTargets
-    else
-      throw "No GPU targets specified"
-  );
-  stdenv = torch.stdenv;
-in
-buildPythonPackage.override { inherit stdenv; } (finalAttrs: {
+buildPythonPackage.override { stdenv = torch.stdenv; } (finalAttrs: {
   pname = "torchaudio";
   version = "2.10.0";
   pyproject = true;
@@ -99,15 +44,6 @@ buildPythonPackage.override { inherit stdenv; } (finalAttrs: {
 
   env = {
     TORCH_CUDA_ARCH_LIST = "${lib.concatStringsSep ";" torch.cudaCapabilities}";
-    # https://github.com/pytorch/audio/blob/v2.1.0/docs/source/build.linux.rst#optional-build-torchaudio-with-a-custom-built-ffmpeg
-    FFMPEG_ROOT = symlinkJoin {
-      name = "ffmpeg";
-      paths = [
-        ffmpeg_6-full.bin
-        ffmpeg_6-full.dev
-        ffmpeg_6-full.lib
-      ];
-    };
     BUILD_SOX = 0;
     BUILD_KALDI = 0;
     BUILD_RNNT = 0;
@@ -130,18 +66,17 @@ buildPythonPackage.override { inherit stdenv; } (finalAttrs: {
   );
 
   buildInputs = [
-    ffmpeg_6-full
     pybind11
     sox
     torch.cxxdev
   ]
-  ++ lib.optionals stdenv.cc.isClang [ llvmPackages.openmp ];
+  ++ lib.optionals torch.stdenv.cc.isClang [ llvmPackages.openmp ];
 
   dependencies = [ torch ];
 
   preConfigure = lib.optionalString rocmSupport ''
-    export ROCM_PATH=${rocmtoolkit_joined}
-    export PYTORCH_ROCM_ARCH="${gpuTargetString}"
+    export ROCM_PATH=${torch.rocmtoolkit_joined}
+    export PYTORCH_ROCM_ARCH="${torch.gpuTargetString}"
   '';
 
   dontUseCmakeConfigure = true;
@@ -159,6 +94,7 @@ buildPythonPackage.override { inherit stdenv; } (finalAttrs: {
       lib.platforms.linux ++ lib.optionals (!cudaSupport && !rocmSupport) lib.platforms.darwin;
     maintainers = with lib.maintainers; [
       GaetanLepage
+      caniko
       junjihashimoto
     ];
   };

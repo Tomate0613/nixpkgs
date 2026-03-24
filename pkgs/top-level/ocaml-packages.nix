@@ -356,6 +356,8 @@ let
 
         ctypes-foreign = callPackage ../development/ocaml-modules/ctypes/foreign.nix { };
 
+        cudd = callPackage ../development/ocaml-modules/cudd { };
+
         cudf = callPackage ../development/ocaml-modules/cudf { };
 
         curl = callPackage ../development/ocaml-modules/curl { inherit (pkgs) curl; };
@@ -548,19 +550,7 @@ let
           stdenv = pkgs.gcc13Stdenv;
         };
 
-        eliom =
-          let
-            js_of_ocaml-compiler = self.js_of_ocaml-compiler.override { version = "5.9.1"; };
-            js_of_ocaml = self.js_of_ocaml.override { inherit js_of_ocaml-compiler; };
-          in
-          callPackage ../development/ocaml-modules/eliom rec {
-            js_of_ocaml-ppx = self.js_of_ocaml-ppx.override { inherit js_of_ocaml; };
-            js_of_ocaml-ppx_deriving_json = self.js_of_ocaml-ppx_deriving_json.override {
-              inherit js_of_ocaml;
-            };
-            js_of_ocaml-lwt = self.js_of_ocaml-lwt.override { inherit js_of_ocaml js_of_ocaml-ppx; };
-            js_of_ocaml-tyxml = self.js_of_ocaml-tyxml.override { inherit js_of_ocaml js_of_ocaml-ppx; };
-          };
+        eliom = callPackage ../development/ocaml-modules/eliom { };
 
         elpi = callPackage ../development/ocaml-modules/elpi (
           let
@@ -696,6 +686,8 @@ let
 
         frontc = callPackage ../development/ocaml-modules/frontc { };
 
+        fs-io = callPackage ../development/ocaml-modules/fs-io { };
+
         functory = callPackage ../development/ocaml-modules/functory { };
 
         ### G ###
@@ -826,6 +818,8 @@ let
         hmap = callPackage ../development/ocaml-modules/hmap { };
 
         hpack = callPackage ../development/ocaml-modules/hpack { };
+
+        htmlit = callPackage ../development/ocaml-modules/htmlit { };
 
         http = callPackage ../development/ocaml-modules/cohttp/http.nix { };
 
@@ -1076,7 +1070,6 @@ let
         lambda-term = callPackage ../development/ocaml-modules/lambda-term { };
 
         lambdapi = callPackage ../development/ocaml-modules/lambdapi {
-          cmdliner = cmdliner_1;
           why3 = pkgs.why3.override { ocamlPackages = self; };
         };
 
@@ -1194,6 +1187,8 @@ let
           cohttp = cohttp_5_3; # due to cohttp_static_handler pulling in cohttp_5_3
         };
 
+        malfunction = callPackage ../development/ocaml-modules/malfunction { };
+
         mariadb = callPackage ../development/ocaml-modules/mariadb {
           inherit (pkgs) mariadb;
         };
@@ -1225,6 +1220,8 @@ let
         mem_usage = callPackage ../development/ocaml-modules/mem_usage { };
 
         menhir = callPackage ../development/ocaml-modules/menhir { };
+
+        menhirGLR = callPackage ../development/ocaml-modules/menhir/glr.nix { };
 
         menhirLib = callPackage ../development/ocaml-modules/menhir/lib.nix { };
 
@@ -1384,6 +1381,8 @@ let
 
         mparser-pcre = callPackage ../development/ocaml-modules/mparser/pcre.nix { };
 
+        mparser-re = callPackage ../development/ocaml-modules/mparser/re.nix { };
+
         msgpck = callPackage ../development/ocaml-modules/msgpck { };
 
         mrmime = callPackage ../development/ocaml-modules/mrmime { };
@@ -1520,6 +1519,7 @@ let
         ocamlformat_0_26_2 = ocamlformat.override { version = "0.26.2"; };
         ocamlformat_0_27_0 = ocamlformat.override { version = "0.27.0"; };
         ocamlformat_0_28_1 = ocamlformat.override { version = "0.28.1"; };
+        ocamlformat_0_29_0 = ocamlformat.override { version = "0.29.0"; };
 
         ocamlformat = callPackage ../development/ocaml-modules/ocamlformat/ocamlformat.nix { };
 
@@ -1582,16 +1582,7 @@ let
 
         ocsigen-start = callPackage ../development/ocaml-modules/ocsigen-start { };
 
-        ocsigen-toolkit =
-          let
-            js_of_ocaml-compiler = self.js_of_ocaml-compiler.override { version = "5.9.1"; };
-            js_of_ocaml = self.js_of_ocaml.override { inherit js_of_ocaml-compiler; };
-          in
-          callPackage ../development/ocaml-modules/ocsigen-toolkit {
-            js_of_ocaml-ppx_deriving_json = self.js_of_ocaml-ppx_deriving_json.override {
-              inherit js_of_ocaml;
-            };
-          };
+        ocsigen-toolkit = callPackage ../development/ocaml-modules/ocsigen-toolkit { };
 
         ocsipersist = callPackage ../development/ocaml-modules/ocsipersist { };
 
@@ -1689,6 +1680,8 @@ let
 
         ### P ###
 
+        pacomb = callPackage ../development/ocaml-modules/pacomb { };
+
         paf = callPackage ../development/ocaml-modules/paf { };
 
         paf-cohttp = callPackage ../development/ocaml-modules/paf/cohttp.nix {
@@ -1755,6 +1748,8 @@ let
         };
 
         posix-base = callPackage ../development/ocaml-modules/posix/base.nix { };
+
+        posix-errno = callPackage ../development/ocaml-modules/posix/errno.nix { };
 
         posix-math2 = callPackage ../development/ocaml-modules/posix/math2.nix { };
 
@@ -2138,6 +2133,8 @@ let
         tls-mirage = callPackage ../development/ocaml-modules/tls/mirage.nix { };
 
         toml = callPackage ../development/ocaml-modules/toml { };
+
+        top-closure = callPackage ../development/ocaml-modules/top-closure { };
 
         topkg = callPackage ../development/ocaml-modules/topkg { };
 

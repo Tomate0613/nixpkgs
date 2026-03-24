@@ -12,14 +12,16 @@
   versionCheckHook,
   writableTmpDirAsHomeHook,
 }:
+
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "opencode";
-  version = "1.2.13";
+  version = "1.3.0";
+
   src = fetchFromGitHub {
     owner = "anomalyco";
     repo = "opencode";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-Svup7XCVQuIb5Ye7fb90L7dy3VcDy1gBBrqZ5ikOOC4=";
+    hash = "sha256-JQsccVflS/GAjzguvZTLn7UH7tsou8yCSlaA48DVY10=";
   };
 
   node_modules = stdenvNoCC.mkDerivation {
@@ -68,7 +70,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     # NOTE: Required else we get errors that our fixed-output derivation references store paths
     dontFixup = true;
 
-    outputHash = "sha256-Diu/C8b5eKUn7MRTFBcN5qgJZTp0szg0ECkgEaQZ87Y=";
+    outputHash = "sha256-K6wRsvkhKzNL727/nqAUedv0HvfJt7vu13RKKcJ9adk=";
     outputHashAlgo = "sha256";
     outputHashMode = "recursive";
   };
@@ -161,8 +163,9 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     license = lib.licenses.mit;
     maintainers = with lib.maintainers; [
       delafthi
-      graham33
       DuskyElf
+      graham33
+      superherointj
     ];
     sourceProvenance = with lib.sourceTypes; [ fromSource ];
     platforms = [
@@ -172,5 +175,10 @@ stdenvNoCC.mkDerivation (finalAttrs: {
       "x86_64-darwin"
     ];
     mainProgram = "opencode";
+    badPlatforms = [
+      # Broken as 2026-04-23, errors as:
+      # CPU lacks AVX support, strange crashes may occur. Reinstall Bun
+      "x86_64-darwin"
+    ];
   };
 })

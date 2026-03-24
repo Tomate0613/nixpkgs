@@ -7,8 +7,8 @@ vscode-utils.buildVscodeMarketplaceExtension {
   mktplcRef = {
     name = "jjk";
     publisher = "jjk";
-    version = "0.9.0";
-    hash = "sha256-Eoz9K7bet/cJ1WY6QK05YrRnukOs0gpvVD0kY92LEsk=";
+    version = "0.9.3";
+    hash = "sha256-wkHMZTLi3dDV6JQdfJ4hI5uwGAlCmKwg+v8Z9RMU1wU=";
   };
   meta = {
     changelog = "https://github.com/keanemind/jjk/releases";
