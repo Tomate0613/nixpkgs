@@ -16,6 +16,7 @@
   pkg-config,
   glibcLocalesUtf8,
   boehmgc,
+  libghostty-vt,
   llvmPackages,
   nixd,
   bash,
@@ -23,22 +24,23 @@
 }:
 
 let
-  version = "2.0.6";
-  devenvNixVersion = "2.32";
-  devenvNixRev = "e127c1c94cefe02d8ca4cca79ef66be4c527510e";
+  version = "2.2.2";
+  devenvNixVersion = "2.34";
+  devenvNixRev = "59407321a92f7d34d4a53e38959294007c0bc37a";
 
-  nix_components =
-    (nixVersions.nixComponents_git.overrideSource (fetchFromGitHub {
-      owner = "cachix";
-      repo = "nix";
-      rev = devenvNixRev;
-      hash = "sha256-MRNVInSmvhKIg3y0UdogQJXe+omvKijGszFtYpd5r9k=";
-    })).overrideScope
-      (
-        finalScope: prevScope: {
-          version = devenvNixVersion;
-        }
-      );
+  devenvNixSrc = fetchFromGitHub {
+    name = "devenv-nix-${devenvNixVersion}-source";
+    owner = "cachix";
+    repo = "nix";
+    rev = devenvNixRev;
+    hash = "sha256-WcqKvA7f7TGrlDVd69T1UXUqVXJ+wfoRbO+mg5L7/Rc=";
+  };
+
+  nix_components = (nixVersions.nixComponents_git.overrideSource devenvNixSrc).overrideScope (
+    finalScope: prevScope: {
+      version = devenvNixVersion;
+    }
+  );
 in
 rustPlatform.buildRustPackage {
   pname = "devenv";
@@ -47,11 +49,11 @@ rustPlatform.buildRustPackage {
   src = fetchFromGitHub {
     owner = "cachix";
     repo = "devenv";
-    tag = "v${version}";
-    hash = "sha256-i1G6n/7Z5fO9RhplzXQSTiLyh1Cs0GhoCoEStFLARtA=";
+    tag = "v2.2.2";
+    hash = "sha256-UXA2rr/JNIrbTrhPcmbC2y4Uit8NzeAMZAlUfBQ45uw=";
   };
 
-  cargoHash = "sha256-p5kI7HlG6RVxCCEb/J0L2gh36jkm/atAV98ny3h4vqo=";
+  cargoHash = "sha256-w7RUfoY2HoPdHQzn+qfTl0StoiJLkCN5UtxXLNAfbrM=";
 
   env = {
     RUSTFLAGS = "--cfg tracing_unstable";
@@ -78,6 +80,7 @@ rustPlatform.buildRustPackage {
     openssl
     sqlite
     dbus
+    libghostty-vt
     llvmPackages.clang-unwrapped
     nix_components.nix-expr-c
     nix_components.nix-store-c

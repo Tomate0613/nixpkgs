@@ -1,15 +1,23 @@
 {
   lib,
   stdenv,
+  callPackage,
   rustPlatform,
   fetchFromGitHub,
   installShellFiles,
-  cargo,
+  bubblewrap,
   clang,
   cmake,
   gitMinimal,
   libcap,
   libclang,
+  librusty_v8 ? callPackage ./librusty_v8.nix {
+    inherit (callPackage ./fetchers.nix { }) fetchLibrustyV8;
+  },
+  librusty_v8_src_binding ? callPackage ./librusty_v8_src_binding.nix {
+    inherit (callPackage ./fetchers.nix { }) fetchLibrustyV8SrcBinding;
+  },
+  lld,
   makeBinaryWrapper,
   nix-update-script,
   pkg-config,
@@ -17,21 +25,45 @@
   ripgrep,
   versionCheckHook,
   installShellCompletions ? stdenv.buildPlatform.canExecute stdenv.hostPlatform,
+  _experimental-update-script-combinators,
 }:
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "codex";
-  version = "0.116.0";
+  version = "0.147.0";
 
   src = fetchFromGitHub {
     owner = "openai";
     repo = "codex";
     tag = "rust-v${finalAttrs.version}";
-    hash = "sha256-PTsKphg3gPlBUs5oMM34RhJJ4jxvD6hand5aVjXcuZ4=";
+    hash = "sha256-NKeOxp9vLcx7tpghqhpS3ocPqUDP2PircNwkJNpHBPo=";
   };
 
   sourceRoot = "${finalAttrs.src.name}/codex-rs";
 
-  cargoHash = "sha256-X5Yh8+3UrCZfzIplb4OzFfcfoklMu3FikU9vZ6CJbfc=";
+  cargoHash = "sha256-MJuM2QLxvL+r/Gw8QXLjtsLS25QGVCqcqU5GJssSoQ4=";
+
+  __structuredAttrs = true;
+
+  # Match upstream's release build for the codex binary, plus its
+  # codex-code-mode-host runtime companion for out-of-process V8 execution.
+  cargoBuildFlags = [
+    "--package"
+    "codex-cli"
+    "--package"
+    "codex-code-mode-host"
+  ];
+  cargoCheckFlags = [
+    "--package"
+    "codex-cli"
+    "--package"
+    "codex-code-mode-host"
+  ];
+
+  postPatch = ''
+    substituteInPlace Cargo.toml \
+      --replace-fail 'lto = "thin"' "" \
+      --replace-fail 'codegen-units = 4' ""
+  '';
 
   nativeBuildInputs = [
     clang
@@ -64,6 +96,13 @@ rustPlatform.buildRustPackage (finalAttrs: {
         "-Wno-error=character-conversion"
       ]
     );
+    RUSTY_V8_ARCHIVE = librusty_v8;
+    RUSTY_V8_SRC_BINDING_PATH = librusty_v8_src_binding;
+  }
+  // lib.optionalAttrs stdenv.hostPlatform.isDarwin {
+    # Link with lld on Darwin. nixpkgs' classic open-source ld64 fails to insert
+    # ARM64 branch thunks for this binary, producing `b(l) ARM64 branch out of range`.
+    NIX_CFLAGS_LINK = "-fuse-ld=${lib.getExe' lld "ld64.lld"}";
   };
 
   # NOTE: part of the test suite requires access to networking, local shells,
@@ -82,21 +121,24 @@ rustPlatform.buildRustPackage (finalAttrs: {
   '';
 
   postFixup = ''
-    wrapProgram $out/bin/codex --prefix PATH : ${lib.makeBinPath [ ripgrep ]}
+    wrapProgram $out/bin/codex --prefix PATH : ${
+      lib.makeBinPath ([ ripgrep ] ++ lib.optionals stdenv.hostPlatform.isLinux [ bubblewrap ])
+    }
   '';
 
   doInstallCheck = true;
   nativeInstallCheckInputs = [ versionCheckHook ];
 
-  passthru = {
-    updateScript = nix-update-script {
+  passthru.updateScript = _experimental-update-script-combinators.sequence [
+    (nix-update-script {
       extraArgs = [
         "--use-github-releases"
         "--version-regex"
         "^rust-v(\\d+\\.\\d+\\.\\d+)$"
       ];
-    };
-  };
+    })
+    ./update-librusty.sh
+  ];
 
   meta = {
     description = "Lightweight coding agent that runs in your terminal";

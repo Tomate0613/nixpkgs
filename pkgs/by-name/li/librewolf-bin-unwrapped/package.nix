@@ -36,7 +36,7 @@ let
 
   pname = "librewolf-bin-unwrapped";
 
-  version = "148.0.2-2";
+  version = "153.0.4-1";
 in
 
 stdenv.mkDerivation {
@@ -46,8 +46,8 @@ stdenv.mkDerivation {
     url = "https://codeberg.org/api/packages/librewolf/generic/librewolf/${version}/librewolf-${version}-${arch}-package.tar.xz";
     hash =
       {
-        x86_64-linux = "sha256-4FigAIvksbwJ46XqH225woK+inQHUnvyxvQBP/yyagU=";
-        aarch64-linux = "sha256-wp31BZLUgH+pXkaDnlUtXMNuacWEgQbnkxMYt2vhKZY=";
+        x86_64-linux = "sha256-KPv44+F1ofq7L2Ja6XM4AtIutICSfJz6R7XvkvlH5Y0=";
+        aarch64-linux = "sha256-OVR4ivYSdCKIGKYf80FL9WKSFIB6eHura/rMv9Z6asE=";
       }
       .${stdenv.hostPlatform.system} or throwSystem;
   };
@@ -106,13 +106,14 @@ stdenv.mkDerivation {
     description = "Fork of Firefox, focused on privacy, security and freedom (upstream binary release)";
     homepage = "https://librewolf.net";
     license = lib.licenses.mpl20;
-    maintainers = with lib.maintainers; [ dwrege ];
+    maintainers = with lib.maintainers; [
+      azahi
+      eclairevoyant
+      dwrege
+    ];
     platforms = builtins.attrNames mozillaPlatforms;
     mainProgram = "librewolf";
     hydraPlatforms = [ ];
     sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
-    knownVulnerabilities = [
-      "librewolf-bin lacks maintenance in nixpkgs, consider using an alternative"
-    ];
   };
 }

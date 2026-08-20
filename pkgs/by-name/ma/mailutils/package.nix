@@ -25,7 +25,6 @@
   system-sendmail,
   libxcrypt,
   mkpasswd,
-  nss_wrapper,
 
   pythonSupport ? true,
   guileSupport ? true,
@@ -76,6 +75,9 @@ stdenv.mkDerivation (finalAttrs: {
 
   patches = [
     ./fix-build-mb-len-max.patch
+    # Fix linking loadable modules with Libtool 2.6.2
+    # https://savannah.gnu.org/bugs/?68588
+    ./fix-linking-with-libtool-2.6.2.patch
     ./path-to-cat.patch
     # Fix cross-compilation
     # https://lists.gnu.org/archive/html/bug-mailutils/2020-11/msg00038.html
@@ -92,6 +94,12 @@ stdenv.mkDerivation (finalAttrs: {
       name = "mailutils-fix-sighandler-incompatible-pointer-types-gcc15.patch";
       url = "https://gitlab.archlinux.org/archlinux/packaging/packages/mailutils/-/raw/87c3614083260f52dd1222e872a1836f0ff9abe1/fix-build.patch";
       hash = "sha256-RN62l5mYqtViEjXpAlQKWhFez1TPynRMj/1nvZkq5Gs=";
+    })
+    # Fix for non-portable assumptions causing test failures on musl
+    (fetchpatch {
+      name = "portability.patch";
+      url = "https://cgit.git.savannah.gnu.org/cgit/mailutils.git/patch/?id=6e038f04d575731cf90a44cf0114e485a9827a26";
+      hash = "sha256-kamIiQty+/PEB9gC4tPsEMzz1GMGuZAe+DXqjdTeg70=";
     })
   ];
 
@@ -113,20 +121,7 @@ stdenv.mkDerivation (finalAttrs: {
   nativeCheckInputs = [
     dejagnu
     mkpasswd
-    nss_wrapper
   ];
-
-  preCheck = ''
-    # The nix sandbox's /etc/passwd has literal quotes around the home directory
-    # (e.g. "/build" instead of /build). imap4d's mu_homedir_assert (new in
-    # 3.21) calls stat() on this path, which fails because no directory named
-    # '"/build"' exists. Use nss_wrapper to provide a fixed passwd to the tests.
-    sed 's/"//g' /etc/passwd > "$TMPDIR/passwd"
-    sed 's/"//g' /etc/group > "$TMPDIR/group" 2>/dev/null || echo "nixbld:x:100:" > "$TMPDIR/group"
-    export LD_PRELOAD="${nss_wrapper}/lib/libnss_wrapper.so"
-    export NSS_WRAPPER_PASSWD="$TMPDIR/passwd"
-    export NSS_WRAPPER_GROUP="$TMPDIR/group"
-  '';
 
   doCheck = !stdenv.hostPlatform.isDarwin; # ERROR: All 46 tests were run, 46 failed unexpectedly.
 

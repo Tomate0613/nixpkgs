@@ -32,13 +32,13 @@ in
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "ldc";
-  version = "1.41.0";
+  version = "1.42.0";
 
   src = fetchFromGitHub {
     owner = "ldc-developers";
     repo = "ldc";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-6LcpY3LSFK4KgEiGrFp/LONu5Vr+/+vI04wEEpF3s+s=";
+    hash = "sha256-adA14tx/bruGvHVoODz13f8h/U2ol1lK0ytxnypsLv8=";
     fetchSubmodules = true;
   };
 
@@ -177,7 +177,6 @@ stdenv.mkDerivation (finalAttrs: {
       "x86_64-linux"
       "i686-linux"
       "aarch64-linux"
-      "x86_64-darwin"
       "aarch64-darwin"
     ];
   };

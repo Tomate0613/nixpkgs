@@ -18,17 +18,21 @@
   libdbi-drivers ? null,
   postgresSupport ? false,
   libpq ? null,
+  libgudev,
+  glib,
 }:
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "gammu";
-  version = "1.42.0";
+  version = "1.44.0";
+
+  __structuredAttrs = true;
 
   src = fetchFromGitHub {
     owner = "gammu";
     repo = "gammu";
     rev = finalAttrs.version;
-    sha256 = "sha256-aeaGHVxOMiXRU6RHws+oAnzdO9RY1jw/X/xuGfSt76I=";
+    sha256 = "sha256-1ZdsEd0uHB0nzOJ+780lLrJ84kZCHcv3CixuL6Utiow=";
   };
 
   patches = [
@@ -58,8 +62,10 @@ stdenv.mkDerivation (finalAttrs: {
     libusb1
     curl
     gettext
+    glib
     sqlite
     libiconv
+    libgudev
   ]
   ++ lib.optionals dbiSupport [
     libdbi

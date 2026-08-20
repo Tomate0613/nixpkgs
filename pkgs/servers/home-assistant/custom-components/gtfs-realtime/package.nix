@@ -12,13 +12,13 @@
 buildHomeAssistantComponent rec {
   owner = "bcpearce";
   domain = "gtfs_realtime";
-  version = "0.4.4";
+  version = "0.4.8";
 
   src = fetchFromGitHub {
     owner = "bcpearce";
     repo = "homeassistant-gtfs-realtime";
     tag = version;
-    hash = "sha256-iT32ADgDHwBnX6v4UnGkUNtGL9/ukA3EMCLquCBcaKo=";
+    hash = "sha256-rf11yej0IsB3Og5D4n4iAsehWODJcjC930RzcGCsIT4=";
   };
 
   dependencies = [ gtfs-station-stop ];
@@ -30,9 +30,9 @@ buildHomeAssistantComponent rec {
     pytestCheckHook
   ];
 
-  disabledTests = [
-    # upstream snapshot is stale
-    "test_diagnostics"
+  pytestFlags = [
+    # delete unused snapshots in 0.4.8 release
+    "--snapshot-update"
   ];
 
   ignoreVersionRequirement = [ "gtfs_station_stop" ];

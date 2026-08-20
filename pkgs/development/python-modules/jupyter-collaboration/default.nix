@@ -23,14 +23,15 @@
 
 buildPythonPackage (finalAttrs: {
   pname = "jupyter-collaboration";
-  version = "4.2.1";
+  version = "5.0.0";
   pyproject = true;
+  __structuredAttrs = true;
 
   src = fetchFromGitHub {
     owner = "jupyterlab";
     repo = "jupyter-collaboration";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-09fJT81nWGvUME3QU5hk2886y93ssl3IlVSIblxqJ78=";
+    hash = "sha256-Gho8ndF8SU1AWJUlcuw2a/kHD2zu7vH/z4QV8drDrP0=";
   };
 
   sourceRoot = "${finalAttrs.src.name}/projects/jupyter-collaboration";
@@ -60,9 +61,9 @@ buildPythonPackage (finalAttrs: {
     "-pno:cacheprovider"
   ];
 
-  preCheck = ''
-    appendToVar enabledTestPaths "$src/tests"
-  '';
+  enabledTestPaths = [
+    "../../tests"
+  ];
 
   disabledTests = [
     # Failed: Timeout (>300.0s) from pytest-timeout

@@ -9,10 +9,10 @@
 }:
 
 let
-  version = "2.8.3";
-  srcHash = "sha256-5bs7atecd7NqUrJySMxOe01zGpTMbgrau5B6QkUTRyg=";
-  vendorHash = "sha256-ICI9Lace4gv2GE/nb9y5yRlvsOkujr2DA2gQ8PnIrIs=";
-  manifestsHash = "sha256-V1rWHu23K4224eiwUuueG2vk3LsdgtvVGZVQG5vBhLQ=";
+  version = "2.9.4";
+  srcHash = "sha256-7Suhsg1tWn6gzkPDQT4BII0hTCM3HCCZTTtFVNumA9A=";
+  vendorHash = "sha256-3CMj5MI5cILnyWoWkcBzD5X626nsQ6nfipeqN35IQEk=";
+  manifestsHash = "sha256-+187K4w//AxtSYcrA3NoVCSFpTkjNqZmfOlbdzD9YmI=";
 
   manifests = fetchzip {
     url = "https://github.com/fluxcd/flux2/releases/download/v${version}/manifests.tar.gz";
@@ -38,6 +38,8 @@ buildGoModule rec {
     # disable tests that require network access
     rm source/cmd/flux/create_secret_git_test.go
   '';
+
+  env.CGO_ENABLED = 0;
 
   ldflags = [
     "-s"
@@ -82,7 +84,7 @@ buildGoModule rec {
       jlesquembre
       ryan4yin
       SchahinRohani
-      superherointj
+      stealthybox
     ];
     mainProgram = "flux";
   };

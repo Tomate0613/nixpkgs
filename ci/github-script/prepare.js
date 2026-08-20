@@ -1,3 +1,4 @@
+// @ts-nocheck
 const { classify } = require('../supportedBranches.js')
 const { postReview, dismissReviews } = require('./reviews.js')
 const reviewKey = 'prepare'
@@ -172,13 +173,19 @@ module.exports = async ({ github, context, core, dry }) => {
           '  ```',
         ].join('\n')
 
-        await postReview({ github, context, core, dry, body, reviewKey })
-
-        throw new Error(`The PR contains commits from a different base.`)
+        await postReview({
+          github,
+          context,
+          core,
+          dry,
+          body,
+          event: 'REQUEST_CHANGES',
+          reviewKey,
+        })
+      } else {
+        await dismissReviews({ github, context, core, dry, reviewKey })
       }
     }
-
-    await dismissReviews({ github, context, core, dry, reviewKey })
 
     let mergedSha, targetSha
 

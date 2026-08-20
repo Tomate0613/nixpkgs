@@ -33,6 +33,7 @@
   nss,
   pango,
   zlib,
+  zstd,
   libx11,
   libxcomposite,
   libxcursor,
@@ -57,11 +58,11 @@
 
 stdenv.mkDerivation rec {
   pname = "webex";
-  version = "45.10.1.33646";
+  version = "46.6.1.35355";
 
   src = fetchurl {
-    url = "https://binaries.webex.com/WebexDesktop-Ubuntu-Gold/20251205014600/Webex_ubuntu.7z";
-    sha256 = "59894d56ed2d55df1ca908d8b6993c208d685f6e77b8c315e370471e616cfd8d";
+    url = "https://binaries.webex.com/WebexDesktop-Ubuntu-2004-Gold/20260721114923/Webex_ubuntu.7z";
+    sha256 = "a8f6218a538ce67168accbc81450f79a3d527061ddfb6085574d2abe33181714";
   };
 
   nativeBuildInputs = [
@@ -89,6 +90,7 @@ stdenv.mkDerivation rec {
     nss
     pango
     zlib
+    zstd
     libdrm
     libgcrypt
     libglvnd

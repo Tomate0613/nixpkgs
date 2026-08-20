@@ -10,7 +10,7 @@
 
 let
   pname = "trezor-suite";
-  version = "26.3.2";
+  version = "26.7.4";
 
   suffix =
     {
@@ -24,8 +24,8 @@ let
     hash =
       {
         # curl -Lfs https://github.com/trezor/trezor-suite/releases/download/v${version}/latest-linux{-arm64,}.yml | grep ^sha512 | sed 's/: /-/'
-        aarch64-linux = "sha512-wkWa1VE7cFfhCQrYG5qHusoCY3YNgYOWPeKTxODrY73Mg3cbTPT9EcQ73KXERzDZKDBZNdQncMVadxNrenVysQ==";
-        x86_64-linux = "sha512-h2vUoEbR0/LTQn1HxPUUthgIBukrfLWcsjPwGpeiJvninitrHYNMr7eWqOl2MguyFbhNJd36/JPG7nqKFywj1A==";
+        aarch64-linux = "sha512-ESlTDvRu5blfLWbn+CDenbJsmuGUnCXeuuhswFe1rryThFz6YSOLuHaRH2H+FsPu9xtlCJ97D5LTdSI/2l8D8w==";
+        x86_64-linux = "sha512-Q+3yrsM5F9fPXTPy3bDGIX8t57eLJZZOaU/iHRvOoDD1CvC2fc+Dt6BezXeZiINjYxxdb0Wt0IT1phDdpmeDxg==";
       }
       .${stdenv.hostPlatform.system} or (throw "Unsupported system: ${stdenv.hostPlatform.system}");
   };

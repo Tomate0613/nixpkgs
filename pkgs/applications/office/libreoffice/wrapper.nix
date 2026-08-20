@@ -19,6 +19,7 @@
   extraMakeWrapperArgs ? [ ],
   dbusVerify ? stdenv.hostPlatform.isLinux,
   dbus,
+  unixodbc,
 }:
 
 let
@@ -28,6 +29,10 @@ let
 
   makeWrapperArgs = builtins.concatStringsSep " " (
     [
+      "--prefix"
+      "LD_LIBRARY_PATH"
+      ":"
+      "${lib.getLib unixodbc}/lib"
       "--set"
       "GDK_PIXBUF_MODULE_FILE"
       "${librsvg}/${gdk-pixbuf.moduleDir}.cache"
@@ -112,6 +117,11 @@ let
             export DBUS_SESSION_BUS_ADDRESS="unix:path=$dbus_socket_dir/session"
         fi
       '')
+    ]
+    ++ lib.optionals unwrapped.withJava [
+      "--set"
+      "JAVA_HOME"
+      "${unwrapped.jdk.home}"
     ]
     ++ [
       "--inherit-argv0"

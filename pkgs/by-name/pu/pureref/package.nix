@@ -9,7 +9,7 @@
   dpkg,
 }:
 let
-  version = "2.0.3";
+  version = "2.1.3";
   deb =
     runCommand "PureRef-${version}_x64"
       {
@@ -19,7 +19,7 @@ let
           cacert
           dpkg
         ];
-        outputHash = "sha256-VdKu1YQa+//FbNWqgTPoUhY4pSekgVohI53D4i5hVkQ=";
+        outputHash = "sha256-7S0nnEwtGKKKNPZL2pb5Z8bKKB5eWvymSS2pQo9cJa0=";
         outputHashMode = "recursive";
       }
       ''
@@ -29,7 +29,7 @@ let
         chmod 755 $out
       '';
 in
-appimageTools.wrapType1 {
+appimageTools.wrapType2 {
   pname = "pureref";
   inherit version;
 
